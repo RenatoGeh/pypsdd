@@ -33,7 +33,7 @@ class DataSet:
         del self.data[key]
 
     def __iter__(self):
-        return self.data.iteritems()
+        return iter(self.data.items())
 
     def __repr__(self,limit=10):
         cmpf = lambda x, y: -x[1].__cmp__(y[1])
