@@ -468,7 +468,7 @@ class SddTerminalEnumerator:
     def empty(self):
         return len(self.heap) == 0
 
-    def next(self):
+    def __next__(self):
         if self.empty(): raise StopIteration()
         return heapq.heappop(self.heap)
 
@@ -513,10 +513,10 @@ class SddNodeEnumerator:
     def empty(self):
         return len(self.heap) == 0
 
-    def next(self):
+    def __next__(self):
         while not self.empty():
             enum = heapq.heappop(self.heap)
-            model = enum.next()
+            model = next(enum)
             self.topk.append(model)
             if not enum.empty(): heapq.heappush(self.heap,enum)
             return model
@@ -526,7 +526,7 @@ class SddNodeEnumerator:
     def __next__(self):
         while not self.empty():
             enum = heapq.heappop(self.heap)
-            model = enum.next()
+            model = next(enum)
             self.topk.append(model)
             if not enum.empty(): heapq.heappush(self.heap,enum)
             return model
@@ -540,7 +540,7 @@ class SddNodeEnumerator:
                 k += 1
             else:
                 try:
-                    self.next()
+                    next(self)
                 except StopIteration:
                     return
 
@@ -572,7 +572,7 @@ class SddElementEnumerator:
             except StopIteration:
                 self.inst = None
 
-        def next(self):
+        def __next__(self):
             if self.inst is None:
                 raise StopIteration()
             else:
@@ -621,10 +621,10 @@ class SddElementEnumerator:
             enum = SddElementEnumerator.HeapElement(pinst,siter,self,piter=piter)
             if not enum.empty(): heapq.heappush(self.heap,enum)
 
-    def next(self):
+    def __next__(self):
         while not self.empty():
             best = heapq.heappop(self.heap)
-            inst = best.next()
+            inst = next(best)
 
             if best.piter is not None: # generate next prime model
                 piter,best.piter = best.piter,None

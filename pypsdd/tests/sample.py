@@ -7,7 +7,7 @@ from pypsdd import Vtree,SddManager,PSddManager,io
 from pypsdd import DataSet,Prior,DirichletPrior,UniformSmoothing
 
 k = 50 # number of training sets
-Ns = range(8,13) # dataset sizes
+Ns = list(range(8,13)) # dataset sizes
 vtree_filename = "examples/example.vtree"
 sdd_filename = "examples/example.sdd"
 

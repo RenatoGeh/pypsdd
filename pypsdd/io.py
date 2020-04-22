@@ -294,9 +294,9 @@ def psdd_yitao_read(filename,pmanager):
             line_iter = iter(line[3:])
             elements,theta = list(),dict()
             for i in range(size):
-                p = nodes[int(line_iter.next())]
-                s = nodes[int(line_iter.next())]
-                log_theta = float(line_iter.next())
+                p = nodes[int(next(line_iter))]
+                s = nodes[int(next(line_iter))]
+                log_theta = float(next(line_iter))
                 element = (p,s)
                 elements.append(element)
                 theta[element] = math.exp(log_theta)

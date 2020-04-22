@@ -36,11 +36,11 @@ class DataSet:
         del self.data[key]
 
     def __iter__(self):
-        return iter(self.data.items())
+        return iter(list(self.data.items()))
 
     def __repr__(self,limit=10):
         cmpf = lambda x, y: -x[1].__cmp__(y[1])
-        items = sorted(self.data.items(), key=functools.cmp_to_key(cmpf))
+        items = sorted(list(self.data.items()), key=functools.cmp_to_key(cmpf))
         fmt = " %%%dd %%s" % len(str(items[0][1]))
         st = [ fmt % (count,inst) for inst,count in items[:limit] ]
         if len(items) > limit: st.append(" ...")
@@ -347,7 +347,7 @@ class InstMap:
 
     def __iter__(self):
         """generator for (var,value) pairs"""
-        for var in self.inst.keys():
+        for var in list(self.inst.keys()):
             yield var,self.inst[var]
 
     #def __reversed__(self): pass

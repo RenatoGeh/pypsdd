@@ -50,7 +50,7 @@ class Prior:
             else: # node.is_decomposition()
                 pelements = node.positive_elements
                 pr = Prior.random_parameter_set(len(pelements),psi=psi)
-                node.theta = dict(zip(pelements,pr))
+                node.theta = dict(list(zip(pelements,pr)))
 
 class DirichletPrior(Prior):
     """Dirichlet prior for PSDDs"""
@@ -139,7 +139,7 @@ class UniformSmoothing(Prior):
                 mc = float(node.data) # model count
                 nc = node.theta_sum   # node count
                 counts = [ nc*p.data*s.data/mc for p,s in pelements ]
-                node.theta = dict(zip(pelements,counts))
+                node.theta = dict(list(zip(pelements,counts)))
                 for (p,s),count in zip(pelements,counts):
                     p.theta_sum += count
                     s.theta_sum += count

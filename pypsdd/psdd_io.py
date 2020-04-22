@@ -14,7 +14,7 @@ def pairs(lst):
     if lst is None: return
     it = iter(lst)
     for x in it:
-        y = it.next()
+        y = next(it)
         yield (x,y)
 
 ########################################

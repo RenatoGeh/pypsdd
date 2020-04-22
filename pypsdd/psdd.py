@@ -241,7 +241,7 @@ class PSddNode(NormalizedSddNode):
                 svals = [ s.data[0]/s.theta_sum for p,s in pels ]
                 vals = [ pval*sval*node.theta[el] for pval,sval,el \
                          in zip(pvals,svals,pels) ]
-                mpe_val,mpe_ind = max(zip(vals,pels))
+                mpe_val,mpe_ind = max(list(zip(vals,pels)))
             node.data = (mpe_val,mpe_ind)
 
         mpe_inst = InstMap()
@@ -365,7 +365,7 @@ class PSddNode(NormalizedSddNode):
             val = 0 if self.literal < 0 else 1
             inst[self.vtree.var] = val
         else:
-            pr = self.theta.items()
+            pr = list(self.theta.items())
             p,s = PSddNode.sample(pr,z=self.theta_sum)
             p.simulate(inst=inst)
             s.simulate(inst=inst)
@@ -393,7 +393,7 @@ class PSddNode(NormalizedSddNode):
             val = 0 if self.literal < 0 else 1
             inst[self.vtree.var] = val
         else:
-            pr = self.theta.items()
+            pr = list(self.theta.items())
             pr_with_evidence = []
             theta_sum_evidence = 0.0
             for pp in pr:

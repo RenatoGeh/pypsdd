@@ -84,7 +84,7 @@ def run_test_inst():
     print ("2 in inst? %s == False" % (2 in inst))
     inst[3] = True
     print (inst)
-    varset = ",".join(str(var) for var in inst.inst.keys())
+    varset = ",".join(str(var) for var in list(inst.inst.keys()))
     print ("varset: (%d) %s" % (len(inst),varset))
     for var,val in inst:
         print ("inst[%d] = %d" % (var,val))
