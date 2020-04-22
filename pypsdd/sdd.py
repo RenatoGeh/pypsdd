@@ -407,77 +407,11 @@ class NormalizedSddNode(SddNode):
             node.data = count
 
         return count
-
-    def get_weighted_mpe(self, lit_weights, clear_data=True):
-        """Compute the MPE instation given weights associated with literals.
-
-        Assumes the SDD is normalized.
-        """
-        for node in self.as_positive_list(clear_data=clear_data):
-            if node.is_false():
-                # No configuration on false
-                data = (0, [])
-            elif node.is_true():
-                # Need to pick max assignment for variable here
-                b_ind = max([0,1], key=lambda x: lit_weights[node.vtree.var-1][x])
-                # If it's a 0, then -lit number, else lit number
-                data = (lit_weights[node.vtree.var-1][b_ind], [pow(-1,b_ind+1) * node.vtree.var])
-            elif node.is_literal():
-                if node.literal > 0:
-                    data = (lit_weights[node.literal-1][1], [node.literal])
-                else:
-                    data = (lit_weights[-node.literal-1][0], [node.literal])
-            else: # node is_decomposition()
-                data = max(((p.data[0] * s.data[0], p.data[1] + s.data[1]) for p,s in node.positive_elements)
-                        , key=lambda x: x[0])
-            node.data = data
-        return data
-
-    def weighted_model_count(self, lit_weights, clear_data=True):
-        """ Compute weighted model count given literal weights
-
-        Assumes the SDD is normalized.
-        """
-        for node in self.as_list(clear_data=clear_data):
-            if node.is_false():
-                data = 0
-            elif node.is_true():
-                data = 1
-            elif node.is_literal():
-                if node.literal > 0:
-                    data = lit_weights[node.literal-1][1]
-                else:
-                    data = lit_weights[-node.literal-1][0]
-            else: # node is_decomposition
-                data = sum(p.data * s.data for p,s in node.elements)
-            node.data = data
-        return data
-
-    def generate_tf_ac(self, litleaves, clear_data=True):
-        """ Generates a tensorflow arithmetic circuit according to the weighted model counting procedure for this SDD.
-
-        Assumes the SDD is normalized.
-        """
-
-        # Going to need tensorflow for this, but not for the rest of the project, so import here
-        import tensorflow as tf
-
-        for node in self.as_list(clear_data=clear_data):
-            if node.is_false():
-                data = tf.constant(0.0)
-            elif node.is_true():
-                data = tf.constant(1.0)
-            elif node.is_literal():
-                if node.literal > 0:
-                    data = litleaves[node.literal-1][1]
-                else:
-                    data = litleaves[-node.literal-1][0]
-            else: # node.is_decomposition
-                data = tf.add_n([tf.multiply(p.data, s.data) for p,s in node.elements])
-            node.data = data
-        return data
-
-
+    
+    def __gt__(self, other):
+        # portnig to pyton3
+        # just to stop mpe give this error  (TypeError: '>' not supported between instances of 'PSddNode' and 'PSddNode')
+        return 1
 
 ########################################
 # MODEL ENUMERATION
@@ -588,6 +522,16 @@ class SddNodeEnumerator:
             return model
         raise StopIteration()
 
+    # copy of next to port to python3
+    def __next__(self):
+        while not self.empty():
+            enum = heapq.heappop(self.heap)
+            model = enum.next()
+            self.topk.append(model)
+            if not enum.empty(): heapq.heappush(self.heap,enum)
+            return model
+        raise StopIteration()
+
     def cached_iter(self):
         k = 0
         while True:
@@ -622,7 +566,7 @@ class SddElementEnumerator:
 
         def _try_next(self):
             try:
-                sinst = self.siter.next()
+                sinst = self.siter.__next__()
                 self.inst = self.pinst.concat(sinst)
                 self.enum_manager._element_update(self.element_enum,self.inst)
             except StopIteration:
@@ -638,7 +582,17 @@ class SddElementEnumerator:
 
         def __cmp__(self,other):
             assert self.inst is not None and other.inst is not None
-            return cmp(self.inst,other.inst)
+            return self.inst.__cmp__(self.inst,other.inst)
+
+        #porting to python3
+        def __lt__(self,other):
+            assert self.inst is not None and other.inst is not None
+            d = self.inst.__cmp__(other.inst)
+            return d < 0 
+        def __gt__(self, other):
+            assert self.inst is not None and other.inst is not None
+            d = self.inst.__cmp__(other.inst)
+            return d > 0 
 
     def __init__(self,prime,sub,parent,vtree,enum_manager):
         self.prime = prime
@@ -659,7 +613,7 @@ class SddElementEnumerator:
 
     def _push_next_element_enumerator(self,piter):
         try:
-            pinst = piter.next()
+            pinst = piter.__next__()
         except StopIteration:
             pinst = None
         if pinst is not None:
@@ -685,3 +639,14 @@ class SddElementEnumerator:
         assert not self.empty() and not other.empty()
         return cmp(self.heap[0].inst,other.heap[0].inst)
 
+    
+    #porting to python3
+    def __lt__(self,other):
+        assert not self.empty() and not other.empty()
+        
+        d = self.heap[0].inst.__cmp__(other.heap[0].inst) #cmp(self.heap[0].inst,other.heap[0].inst)
+        return d < 0 
+
+    def __gt__(self, other):
+        d = self.heap[0].inst.__cmp__(other.heap[0].inst) #cmp(self.heap[0].inst,other.heap[0].inst)
+        return d > 0

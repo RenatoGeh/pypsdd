@@ -1,7 +1,6 @@
 import math
 import random
 import heapq
-from itertools import izip
 
 from sdd import SddNode,NormalizedSddNode
 from data import DataSet,Inst,InstMap,WeightedInstMap
@@ -299,7 +298,7 @@ class PSddNode(NormalizedSddNode):
         """Compute KL-divergence between two PSDDs, recursively.  The PSDDs
         must have the same structure, but may have different parameters."""
         if self.is_false_sdd: return 0.0
-        for n1,n2 in izip(self.as_positive_list(),other.as_positive_list()):
+        for n1,n2 in zip(self.as_positive_list(),other.as_positive_list()):
             assert n1.id == n2.id
             if n1.is_false_sdd:
                 kl = 0.0
@@ -322,7 +321,7 @@ class PSddNode(NormalizedSddNode):
         parameters.  This one uses node marginals to compute the KL."""
         self.marginals()
         kl = 0.0
-        for n1,n2 in izip(self.as_positive_list(),other.as_positive_list()):
+        for n1,n2 in zip(self.as_positive_list(),other.as_positive_list()):
             assert n1.id == n2.id
             if n1.is_false_sdd or n1.pr_node == 0.0:
                 continue
@@ -366,10 +365,45 @@ class PSddNode(NormalizedSddNode):
             val = 0 if self.literal < 0 else 1
             inst[self.vtree.var] = val
         else:
-            pr = self.theta.iteritems()
+            pr = self.theta.items()
             p,s = PSddNode.sample(pr,z=self.theta_sum)
             p.simulate(inst=inst)
             s.simulate(inst=inst)
+
+        return inst
+
+    def simulate_with_evidence(self,inst=None,seed=None):
+        """Draw a model from the distribution induced by the PSDD given evidence"""
+        assert not self.is_false()
+        if seed is not None: random.seed(seed)
+        if inst is None: inst = InstMap()
+
+        if self.is_true():
+            if inst[self.vtree.var] == 0 or inst[self.vtree.var] == 1:
+                pass
+            else:
+                p0 = self.theta[0] #* self.data
+                p1 = self.theta[1] #* (1-self.data)
+                p_sum_cur = p0 + p1
+                p = p0 / p_sum_cur
+                # print(self)
+                val = 0 if random.random() < p else 1
+                inst[self.vtree.var] = val
+        elif self.is_literal():
+            val = 0 if self.literal < 0 else 1
+            inst[self.vtree.var] = val
+        else:
+            pr = self.theta.items()
+            pr_with_evidence = []
+            theta_sum_evidence = 0.0
+            for pp in pr:
+                prk = pp[0][0].data * pp[0][1].data
+                pr_with_evidence.append( (pp[0], pp[1] * prk) )  
+                theta_sum_evidence +=  pp[1] * prk
+
+            p,s = PSddNode.sample(pr_with_evidence,z=theta_sum_evidence)
+            p.simulate_with_evidence(inst=inst)
+            s.simulate_with_evidence(inst=inst)
 
         return inst
 
@@ -401,7 +435,7 @@ class PSddNode(NormalizedSddNode):
         n = len(data)
         for i,(inst,count) in enumerate(data):
             if verbose and (n-i-1)%max(1,(n/10)) == 0:
-                print "%3.0f%% done" % (100.0*(i+1)/n)
+                print ( "%3.0f%% done" % (100.0*(i+1)/n) )
             # mark satisfying sub-circuit
             self.is_model_marker(inst,clear_bits=False,clear_data=False)
             self._increment_follow_marker(float(count))
@@ -444,7 +478,7 @@ class SubCircuit:
             return "vt_%d: %d (%d) %.4f" % (vt_id,node_id,self.element,pr)
 
     def print_subcircuit(self):
-        print self
+        print (self)
         if self.node.is_decomposition():
             self.left.print_subcircuit()
             self.right.print_subcircuit()

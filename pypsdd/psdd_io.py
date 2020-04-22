@@ -2,6 +2,7 @@ from sdd import SddNode
 from psdd import PSddNode
 import math
 
+import numpy as np
 # AC: TODO: check vtree scope
 
 ########################################
@@ -269,7 +270,7 @@ def psdd_yitao_read(filename,pmanager):
     for line in f:
         node = None
         if line.startswith('c'): continue
-        elif line.startswith('psdd'):
+        if line.startswith('psdd'):
             node_count = int(line[4:]) # ignored
             nodes = {}
         elif line.startswith('F'): # no FALSE nodes
@@ -277,29 +278,29 @@ def psdd_yitao_read(filename,pmanager):
         elif line.startswith('T'):
             line = line[2:].split()
             node_id,vtree_id,var = [ int(x) for x in line[:-1] ]
-            theta = float(line[-1])
+            theta = np.float64(line[-1])
             vtree = var_to_vtree[var]
             node = PSddNode(SddNode.TRUE,None,vtree,pmanager)
-            node.theta = [ 1.0-math.exp(theta),math.exp(theta) ]
+            node.theta = [ np.float64(1.0)-np.exp(theta), np.exp(theta) ]
             node.theta_sum = sum(node.theta)
         elif line.startswith('L'):
             node_id,vtree_id,lit = [ int(x) for x in line[2:].split() ]
             node = pmanager.literals[lit]
-            node.theta = [0.0,0.0]
-            node.theta[node.literal > 0] = 1.0
-            node.theta_sum = 1.0
+            node.theta = [np.float64(0.0),np.float64(0.0)]
+            node.theta[node.literal > 0] = np.float64(1.0)
+            node.theta_sum = np.float64(1.0)
         elif line.startswith('D'):
             line = line[2:].split()
             node_id,vtree_id,size = [ int(x) for x in line[:3] ]
             line_iter = iter(line[3:])
             elements,theta = list(),dict()
             for i in range(size):
-                p = nodes[int(line_iter.next())]
-                s = nodes[int(line_iter.next())]
-                log_theta = float(line_iter.next())
+                p = nodes[int(line_iter.__next__())]
+                s = nodes[int(line_iter.__next__())]
+                log_theta = np.float64(line_iter.__next__())
                 element = (p,s)
                 elements.append(element)
-                theta[element] = math.exp(log_theta)
+                theta[element] = np.exp(log_theta)
             left_vtree = p.vtree
             right_vtree = s.vtree
             assert p.vtree.parent == s.vtree.parent

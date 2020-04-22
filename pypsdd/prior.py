@@ -28,7 +28,7 @@ class Prior:
         
         k is the number of states
         psi is the Dirichlet meta-parameter"""
-        pr = [ random.gammavariate(psi,1) for i in xrange(k) ]
+        pr = [ random.gammavariate(psi,1) for i in range(k) ]
         pr_sum = sum(pr)
         return [ p/pr_sum for p in pr ]
 
