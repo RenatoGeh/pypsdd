@@ -8,8 +8,8 @@ from pypsdd import DataSet,Prior,DirichletPrior,UniformSmoothing
 
 k = 50 # number of training sets
 Ns = range(8,13) # dataset sizes
-vtree_filename = "pypsdd/tests/examples/example.vtree"
-sdd_filename = "pypsdd/tests/examples/example.sdd"
+vtree_filename = "examples/example.vtree"
+sdd_filename = "examples/example.sdd"
 
 print ("reading vtree and sdd ...")
 vtree = Vtree.read(vtree_filename)
