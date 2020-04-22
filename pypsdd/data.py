@@ -5,6 +5,9 @@ from collections import defaultdict
 
 # AC: TODO: empty Inst?  Inst.from_list([],var_count)?
 
+def _cmp(a, b):
+    return (a > b) - (a < b)
+
 class DataSet:
     """Dataset.  Implements a Dict from object to count in dataset"""
 
@@ -219,7 +222,7 @@ class Inst(tuple):
         Intended for two Inst with the same var_count"""
         if len(self) < len(other): return -1
         if len(self) > len(other): return 1
-        return cmp(self.bitset,other.bitset)
+        return _cmp(self.bitset,other.bitset)
 
     def __repr__(self):
         st = { 0:"0",1:"1",None:"-" }

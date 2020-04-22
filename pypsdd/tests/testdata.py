@@ -7,10 +7,10 @@ import locale # for printing numbers with commas
 locale.setlocale(locale.LC_ALL, "en_US.UTF8")
 
 #import pypsdd
-from .. import Vtree,SddManager,PSddManager,SddNode,PSddNode
-from .. import Timer,DataSet,Inst,InstMap
-from .. import Prior,DirichletPrior,UniformSmoothing
-from .. import io
+from pypsdd import Vtree,SddManager,PSddManager,SddNode,PSddNode
+from pypsdd import Timer,DataSet,Inst,InstMap
+from pypsdd import Prior,DirichletPrior,UniformSmoothing
+from pypsdd import io
 
 def fmt(number):
     return locale.format("%d",number,grouping=True)
