@@ -5,6 +5,9 @@ from .psdd import PSddNode
 
 import functools
 
+def _cmp(a, b):
+    return (a > b) - (a < b)
+
 class SddManager:
     """SDD Manager"""
 
@@ -48,9 +51,9 @@ class SddManager:
 
     def _canonical_elements(self,elements):
         """Given a list of elements, canonicalize them"""
-        #cmpf = lambda x,y: cmp(x[0].id,y[0].id)
-        cmpf = lambda x: x[0].id
-        elf = lambda x: tuple(sorted(x, key= functools.cmp_to_key(cmpf)))
+        cmpf = lambda x,y: _cmp(x[0].id,y[0].id)
+        # cmpf = lambda self, x: x[0].id
+        elf = lambda x: tuple(sorted(x, key=functools.cmp_to_key(cmpf)))
         return elf(elements)
 
     def lookup_node(self,elements,vtree_node):

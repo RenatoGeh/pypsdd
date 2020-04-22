@@ -1,5 +1,6 @@
 import math
 import random
+import functools
 from collections import defaultdict
 
 # AC: TODO: empty Inst?  Inst.from_list([],var_count)?
@@ -35,8 +36,8 @@ class DataSet:
         return self.data.iteritems()
 
     def __repr__(self,limit=10):
-        cmpf = lambda x,y:-cmp(x[1],y[1])
-        items = sorted(self.data.items(),cmp=cmpf)
+        cmpf = lambda x, y: -x[1].__cmp__(y[1])
+        items = sorted(self.data.items(), key=functools.cmp_to_key(cmpf))
         fmt = " %%%dd %%s" % len(str(items[0][1]))
         st = [ fmt % (count,inst) for inst,count in items[:limit] ]
         if len(items) > limit: st.append(" ...")
