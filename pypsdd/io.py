@@ -1,5 +1,5 @@
-from sdd import SddNode
-from psdd import PSddNode
+from .sdd import SddNode
+from .psdd import PSddNode
 import math
 
 # AC: TODO: check vtree scope
@@ -117,7 +117,7 @@ def sdd_save_as_dot(root,filename):
             p_label,s_label = _node_label(p),_node_label(s)
             f.write(_dot_element_fmt % (n.index,i,p_label,s_label))
             f.write(_dot_or_fmt % (n.index,n.index,i))
-            if p.is_decomposition(): 
+            if p.is_decomposition():
                 f.write(_dot_box_fmt % (n.index,i,'L',p.index))
             if s.is_decomposition():
                 f.write(_dot_box_fmt % (n.index,i,'R',s.index))
@@ -200,7 +200,7 @@ def psdd_save_as_dot(root,filename,subcircuit=None,labels=_dot_names):
         if subcircuit:
             sc_node = subcircuit.node_of_vtree(n.vtree)
             n_on_sc = sc_node.node == n
-        node_color = "red" if n_on_sc else "black" 
+        node_color = "red" if n_on_sc else "black"
         pr_label = "" if n_on_sc else "" # AC
 
         f.write(_dot_psdd_node_fmt % (n.index,n.vtree.id,node_color,pr_label))
@@ -220,7 +220,7 @@ def psdd_save_as_dot(root,filename,subcircuit=None,labels=_dot_names):
 
             f.write(_dot_psdd_element_fmt % (n.index,i,el_color,p_label,s_label))
             f.write(_dot_psdd_or_fmt % (n.index,n.index,i,edge_label,el_color))
-            if p.is_decomposition(): 
+            if p.is_decomposition():
                 f.write(_dot_psdd_box_fmt % (n.index,i,'L',p.index,el_color))
             if s.is_decomposition():
                 f.write(_dot_psdd_box_fmt % (n.index,i,'R',s.index,el_color))

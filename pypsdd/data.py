@@ -2,7 +2,7 @@ import math
 import random
 from collections import defaultdict
 
-# AC: TODO: empty Inst?  Inst.from_list([],var_count)? 
+# AC: TODO: empty Inst?  Inst.from_list([],var_count)?
 
 class DataSet:
     """Dataset.  Implements a Dict from object to count in dataset"""
@@ -458,12 +458,12 @@ class WeightedInstMap(InstMap):
 
     # hacky way to add the porting to python3
     def __lt__(self, other):
-        if self.weight < other.weight: 
+        if self.weight < other.weight:
             return False
         elif self.weight > other.weight:
             return True
         else:
-            q = InstMap.__cmp__(self,other) 
+            q = InstMap.__cmp__(self,other)
             return q < 0
 
     def __repr__(self,as_bitstring=True):

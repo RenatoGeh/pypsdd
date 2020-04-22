@@ -25,7 +25,7 @@ class Prior:
     @staticmethod
     def random_parameter_set(k,psi=1.0):
         """Draws a parameter set from a Dirichlet distribution.
-        
+
         k is the number of states
         psi is the Dirichlet meta-parameter"""
         pr = [ random.gammavariate(psi,1) for i in range(k) ]
@@ -99,7 +99,7 @@ class DirichletPrior(Prior):
                     log_prior += count*math.log(theta)
 
         return log_prior
-        
+
 class UniformSmoothing(Prior):
     """Initialize the PSDD weights with a pseudo-count that would be
     equivalent to observing a (prior) dataset over all SDD models,

@@ -2,10 +2,10 @@ import math
 import random
 import heapq
 
-from sdd import SddNode,NormalizedSddNode
-from data import DataSet,Inst,InstMap,WeightedInstMap
-from sdd import SddEnumerator,SddTerminalEnumerator
-from prior import Prior
+from .sdd import SddNode,NormalizedSddNode
+from .data import DataSet,Inst,InstMap,WeightedInstMap
+from .sdd import SddEnumerator,SddTerminalEnumerator
+from .prior import Prior
 
 class PSddNode(NormalizedSddNode):
     """Probabilistic Sentential Decision Diagram (PSDD)
@@ -150,7 +150,7 @@ class PSddNode(NormalizedSddNode):
             elif node.is_literal():
                 sim = evidence.is_compatible(node.literal)
                 value = node.theta_sum if sim else 0.0
-            else: # node.is_decomposition()            
+            else: # node.is_decomposition()
                 value = 0.0
                 for p,s in node.positive_elements:
                     theta = node.theta[(p,s)]
@@ -398,7 +398,7 @@ class PSddNode(NormalizedSddNode):
             theta_sum_evidence = 0.0
             for pp in pr:
                 prk = pp[0][0].data * pp[0][1].data
-                pr_with_evidence.append( (pp[0], pp[1] * prk) )  
+                pr_with_evidence.append( (pp[0], pp[1] * prk) )
                 theta_sum_evidence +=  pp[1] * prk
 
             p,s = PSddNode.sample(pr_with_evidence,z=theta_sum_evidence)
@@ -421,7 +421,7 @@ class PSddNode(NormalizedSddNode):
     def log_posterior(self,data,prior):
         """Computes the (unnormalized) log posterior:
 
-            log Pr(theta | data) 
+            log Pr(theta | data)
               = log Pr(data | theta) + log Pr(theta) - log Pr(data)
 
         but we leave out the - log Pr(data) term.

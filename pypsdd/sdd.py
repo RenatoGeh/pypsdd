@@ -1,5 +1,5 @@
 import heapq
-from data import InstMap
+from .data import InstMap
 
 class SddNode:
     """Sentential Decision Diagram (SDD)"""
@@ -232,7 +232,7 @@ class SddNode:
                 is_model = inst[self.vtree.var]
             else: # trimmed SDD
                 is_model = True #AC: not normalized, self.data = ?
-        elif self.is_literal(): 
+        elif self.is_literal():
             if inst.is_compatible(self.literal):
                 is_model = inst[self.vtree.var]
             else: is_model = None
@@ -257,7 +257,7 @@ class SddNode:
 
     def models(self,vtree,lexical=False):
         """A generator for the models of an SDD.
-        
+
         If lexical is True, then models will be given in lexical
         (sorted) order.  This is typically slower than when
         lexical=False."""
@@ -407,7 +407,7 @@ class NormalizedSddNode(SddNode):
             node.data = count
 
         return count
-    
+
     def __gt__(self, other):
         # portnig to pyton3
         # just to stop mpe give this error  (TypeError: '>' not supported between instances of 'PSddNode' and 'PSddNode')
@@ -506,7 +506,7 @@ class SddNodeEnumerator:
                 raise AssertionError(msg)
             enum = SddElementEnumerator(prime,sub,node,vtree,enum_manager)
             if not enum.empty(): heapq.heappush(self.heap,enum)
-            
+
     def __iter__(self):
         return self
 
@@ -588,11 +588,11 @@ class SddElementEnumerator:
         def __lt__(self,other):
             assert self.inst is not None and other.inst is not None
             d = self.inst.__cmp__(other.inst)
-            return d < 0 
+            return d < 0
         def __gt__(self, other):
             assert self.inst is not None and other.inst is not None
             d = self.inst.__cmp__(other.inst)
-            return d > 0 
+            return d > 0
 
     def __init__(self,prime,sub,parent,vtree,enum_manager):
         self.prime = prime
@@ -639,13 +639,13 @@ class SddElementEnumerator:
         assert not self.empty() and not other.empty()
         return cmp(self.heap[0].inst,other.heap[0].inst)
 
-    
+
     #porting to python3
     def __lt__(self,other):
         assert not self.empty() and not other.empty()
-        
+
         d = self.heap[0].inst.__cmp__(other.heap[0].inst) #cmp(self.heap[0].inst,other.heap[0].inst)
-        return d < 0 
+        return d < 0
 
     def __gt__(self, other):
         d = self.heap[0].inst.__cmp__(other.heap[0].inst) #cmp(self.heap[0].inst,other.heap[0].inst)

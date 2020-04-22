@@ -22,7 +22,7 @@ class Vtree:
     def internal_node(cls,left,right):
         """Creates new internal Vtree node with children left and right"""
         node = Vtree(left,right,None)
-        left.parent = right.parent = node 
+        left.parent = right.parent = node
         return node
 
     def __iter__(self):
